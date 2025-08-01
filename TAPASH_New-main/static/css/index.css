@@ -1,0 +1,141 @@
+body{
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+#logo{
+    height: 67px;
+    width: 60px;
+    animation: 6s ease-in-out infinite e;
+    /* background-color: #f8f9fa; */
+}
+
+.image-container {
+    width: 700px;
+    height: 500px;
+    overflow: hidden;
+    position: absolute;
+    right: 80px;
+    display: inline-block;
+    margin-top: 40px;
+    padding-left: 80px;
+}
+
+.moving-image {
+    width: 625px;
+    height: auto;
+    position: absolute;
+    animation: moveImage 8s ease-in-out infinite; 
+}
+
+@keyframes moveImage {
+    0% {
+        transform: translateY(0); /* Start at the top */
+    }
+    50% {
+        transform: translateY(10%); /* Move to the bottom */
+    }
+    100% {
+        transform: translateY(0); /* Move back to the top */
+    }
+}
+
+.logout{
+    background-color: #963cdd;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 7px;
+}
+
+.logout:hover{
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.341);
+    background-color: #7c2abbe4;
+}
+
+#dermis{
+    margin-right: 330px;
+    margin-left: 0;
+    font-size: 40px;
+    background: linear-gradient(to right, blue, #9013a3);
+    -webkit-background-clip: text;
+    color: transparent;
+    font-weight: 600;
+}
+
+.container-fluid a{
+    margin-right: 80px;
+}
+
+.container-fluid a:hover{
+    font-weight: 400;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.front{
+    width: 600px;
+    display: inline-block;
+    /* top right bottom left */
+    margin: 80px 0px 0px 80px;
+}
+
+.front p{
+    margin: 40px 0px 40px 0px;
+}
+
+.try{
+    margin-left: 100px;
+    padding: 20px;
+    width: 250px;
+    border-radius: 20px;
+}
+
+.footer {
+    background-color: #7c2abbe4;
+    color: white;
+    padding: 20px 0;
+    /* text-align: center; */
+    margin-top: 60px;
+    height: 270px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10%;
+}
+
+.footer-logo {
+    font-size: 32px;
+    font-weight: bold;
+    margin-top: 50px;
+    padding-left: 40px;
+}
+
+.footer-links a {
+    color: white;
+    margin: 0 45px;
+    text-decoration: none;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+.footer-bottom {
+    margin-top: 95px;
+    margin-left: 200px;
+    font-size: 14px;
+}

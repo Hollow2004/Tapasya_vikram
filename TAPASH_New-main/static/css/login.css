@@ -1,0 +1,67 @@
+body {
+    font-family: Arial, sans-serif;
+    /* background: #f0f0f0; */
+    background: url('/static/assets/back_log.svg') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+h1 {
+    text-align: center;
+    color: #fffefe;
+    margin-bottom: 20px;
+    font-family: "Playfair Display", serif;
+    font-optical-sizing: auto;
+    font-size: 50px;
+}
+
+form {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.655);
+    max-width: 400px;
+    width: 100%;
+}
+
+form input[type="text"],
+form input[type="password"],
+form input[type="submit"] {
+    opacity: 200%;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 25px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+form input[type="submit"] {
+    margin-top: 25px;
+    background: #7455e9;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+form input[type="submit"]:hover {
+    background: #7647d4;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.056);
+}
+
+a {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    color: #fcfefc;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}

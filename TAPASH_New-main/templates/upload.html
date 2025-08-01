@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skin Disease Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-stethoscope"></i> Skin Disease Analysis</h1>
+            <p class="subtitle">Upload an image for AI-powered dermatological analysis</p>
+        </div>
+
+        <div class="upload-section">
+            <div class="upload-card">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h3>Select Image for Analysis</h3>
+                
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    <div class="flash-messages">
+                    {% for message in messages %}
+                      <div class="flash-message {% if 'successfully' in message %}success{% else %}error{% endif %}">
+                        <i class="fas {% if 'successfully' in message %}fa-check-circle{% else %}fa-exclamation-triangle{% endif %}"></i>
+                        {{ message }}
+                      </div>
+                    {% endfor %}
+                    </div>
+                  {% endif %}
+                {% endwith %}
+
+                <form method="post" action="/" enctype="multipart/form-data" class="upload-form">
+                    <div class="file-input-wrapper">
+                        <input type="file" name="file" id="file-input" accept="image/*" required>
+                        <label for="file-input" class="file-input-label">
+                            <i class="fas fa-image"></i>
+                            <span>Choose Image</span>
+                        </label>
+                    </div>
+                    <p class="supported-formats">Supported formats: PNG, JPG, JPEG, GIF, WEBP</p>
+                    <button type="submit" class="analyze-btn">
+                        <i class="fas fa-microscope"></i>
+                        Analyze Image
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {% if filename %}
+        <div class="results-section">
+            <div class="image-preview">
+                <h3><i class="fas fa-image"></i> Uploaded Image</h3>
+                <div class="image-container">
+                    <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Uploaded skin image">
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if prediction %}
+        <div class="prediction-section">
+            <div class="prediction-card">
+                <div class="prediction-header">
+                    <h3><i class="fas fa-brain"></i> AI Analysis Result</h3>
+                    <div class="confidence-badge">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Analysis Complete</span>
+                    </div>
+                </div>
+                
+                <div class="prediction-content">
+                    <div class="diagnosis-card">
+                        <div class="diagnosis-icon">
+                            <i class="fas fa-medical-cross"></i>
+                        </div>
+                        <div class="diagnosis-info">
+                            <h4>Detected Condition</h4>
+                            <p class="diagnosis-name">{{ prediction }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="important-notice">
+                    <div class="notice-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="notice-content">
+                        <h4>Important Medical Disclaimer</h4>
+                        <p>This AI analysis is for informational purposes only and should not replace professional medical advice. Please consult with a qualified dermatologist or healthcare provider for proper diagnosis and treatment.</p>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn-secondary" onclick="window.location.href='/upload'">
+                        <i class="fas fa-upload"></i>
+                        Analyze Another Image
+                    </button>
+                    <button class="btn-primary" onclick="window.print()">
+                        <i class="fas fa-print"></i>
+                        Print Results
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // File input preview
+        document.getElementById('file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const label = document.querySelector('.file-input-label span');
+            if (file) {
+                label.textContent = file.name;
+            } else {
+                label.textContent = 'Choose Image';
+            }
+        });
+    </script>
+</body>
+</html>
