@@ -24,6 +24,7 @@ body{
     display: inline-block;
     margin-top: 40px;
     padding-left: 80px;
+    z-index: 1;
 }
 
 .moving-image {
@@ -104,15 +105,16 @@ body{
 .footer {
     background-color: #7c2abbe4;
     color: white;
-    padding: 20px 0;
-    /* text-align: center; */
-    margin-top: 60px;
-    height: 270px;
+    padding: 40px 0;
+    margin-top: 600px;
+    height: 150px;
+    position: relative;
+    z-index: 2;
 }
 
 .footer-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: 0 10%;
 }
@@ -120,22 +122,11 @@ body{
 .footer-logo {
     font-size: 32px;
     font-weight: bold;
-    margin-top: 50px;
-    padding-left: 40px;
-}
-
-.footer-links a {
-    color: white;
-    margin: 0 45px;
-    text-decoration: none;
-}
-
-.footer-links a:hover {
-    text-decoration: underline;
+    text-align: center;
 }
 
 .footer-bottom {
-    margin-top: 95px;
-    margin-left: 200px;
+    text-align: center;
+    margin-top: 20px;
     font-size: 14px;
 }

@@ -214,7 +214,7 @@ def allowed_file(filename):
 
 @app.route('/')
 def home():
-    return render_template('first_page.html')
+    return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
