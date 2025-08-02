@@ -14,6 +14,7 @@ import torch
 from torch import nn
 from torchvision import transforms
 from transformers import pipeline
+import datetime
 
 #-------------------------------------------------------------------------------MODEL-------------------------------------------------------------------------
 #------------------------------------TRANSFORMERS PIPELINES----------------------------------------------
@@ -179,6 +180,18 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
+    history = db.relationship('UserHistory', backref='user', lazy=True)
+
+class UserHistory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    image_filename = db.Column(db.String(120), nullable=False)
+    prediction = db.Column(db.String(120), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    symptoms = db.Column(db.Text)
+    recommendation = db.Column(db.Text)
+    follow_up_date = db.Column(db.DateTime)
+    follow_up_completed = db.Column(db.Boolean, default=False)
 
 # Create the database tables within an application context
 with app.app_context():
@@ -285,6 +298,7 @@ def find_second_highest(values):
 
 
 @app.route('/', methods=['POST'])
+@login_required
 def upload_image():
     if 'file' not in request.files:
         flash('No file part')
@@ -304,14 +318,121 @@ def upload_image():
         # Call the preprocess function with the uploaded image path
         prediction = preprocess(file_path)
 
+        # Store image and prediction in user history
+        user_id = current_user.id
+        history = UserHistory(user_id=user_id, image_filename=unique_filename, prediction=prediction)
+        db.session.add(history)
+        db.session.commit()
+
         return render_template('upload.html', filename=unique_filename, prediction=prediction)
     else:
         flash('Allowed image types are - png, jpg, jpeg, gif, webp')
         return redirect(request.url)
 
-# @app.route('/display/<filename>')
+# Step 4: Process User Responses & Step 5: Recommend Next Action
+@app.route('/process-symptoms', methods=['POST'])
+@login_required
+def process_symptoms():
+    prediction = request.form.get('prediction')
+    filename = request.form.get('filename')
+    itching = request.form.get('itching')
+    spreading = request.form.get('spreading')
+    duration = request.form.get('duration')
+    
+    # Process symptoms and generate recommendation
+    symptoms = f"Itching: {itching}, Spreading: {spreading}, Duration: {duration}"
+    recommendation = generate_recommendation(prediction, itching, spreading, duration)
+    
+    # Update the most recent history record for this user
+    history = UserHistory.query.filter_by(user_id=current_user.id, image_filename=filename).first()
+    if history:
+        history.symptoms = symptoms
+        history.recommendation = recommendation
+        db.session.commit()
+    
+    flash('Symptoms processed successfully!')
+    return render_template('upload.html', filename=filename, prediction=prediction, 
+                         symptoms=symptoms, recommendation=recommendation)
+
+# Step 6: Schedule Follow-up
+@app.route('/schedule-follow-up', methods=['POST'])
+@login_required
+def schedule_follow_up_route():
+    filename = request.form.get('filename')
+    schedule_follow_up(current_user.id, filename, days=5)
+    return redirect(url_for('upload'))
+
+def schedule_follow_up(user_id, image_filename, days=3):
+    """Schedule a follow-up after a set number of days"""
+    follow_up_date = datetime.datetime.utcnow() + datetime.timedelta(days=days)
+    history = UserHistory.query.filter_by(user_id=user_id, image_filename=image_filename).first()
+    if history:
+        history.follow_up_date = follow_up_date
+        db.session.commit()
+
+    flash('Follow-up scheduled successfully! Check your reminders.')
+
+
+def generate_recommendation(prediction, itching, spreading, duration):
+    """Generate recommendation based on diagnosis and symptoms"""
+    recommendations = []
+    
+    # Rule-based logic for recommendations
+    if spreading == 'yes' or duration in ['2-4_weeks', 'more_than_month']:
+        recommendations.append("Consult a dermatologist as soon as possible")
+    elif itching == 'yes' and duration == '1-2_weeks':
+        recommendations.append("Monitor the condition and consider seeing a doctor if symptoms persist")
+    else:
+        recommendations.append("Continue home care and monitor the condition")
+    
+    # Add specific recommendations based on condition type
+    if 'Acne' in prediction:
+        recommendations.append("Use gentle, non-comedogenic skincare products")
+    elif 'Eczema' in prediction:
+        recommendations.append("Keep skin moisturized and avoid known triggers")
+    elif 'Melanoma' in prediction or 'Carcinoma' in prediction:
+        recommendations.append("URGENT: See an oncologist or dermatologist immediately")
+    
+    return '; '.join(recommendations)
+
+# Step 7: Monitor Progress
+@app.route('/monitor-progress', methods=['POST'])
+@login_required
+def monitor_progress():
+    # This function could involve image similarity analysis or symptom updates
+    # For simplicity, we will just update the status based on fixed conditions
+    filename = request.form.get('filename')
+    progress_update = request.form.get('progress_update')
+    history = UserHistory.query.filter_by(user_id=current_user.id, image_filename=filename).first()
+
+    if history:
+        if progress_update == 'worsening':
+            history.follow_up_completed = True
+            db.session.commit()
+            flash('Your condition seems to be worsening. A consultation is recommended.')
+        else:
+            flash('Progress monitored successfully. No change detected.')
+    return redirect(url_for('upload'))
+
+# Step 8: Replan or Escalate
+@app.route('/escalate-care', methods=['POST'])
+@login_required
+def escalate_care():
+    filename = request.form.get('filename')
+    history = UserHistory.query.filter_by(user_id=current_user.id, image_filename=filename).first()
+
+    if history:
+        # Follow-up on care plan
+        if not history.follow_up_completed:
+            flash('Follow up on care is not yet completed.')
+        else:
+            flash('Consult your doctor for aggressive intervention.')
+
+    return redirect(url_for('upload'))
+
+# @app.route('/display/3cfilename3e')
 # def display_image(filename):
-#     return redirect(url_for('static', filename='uploads/' + filename), code=301)
+# return redirect(url_for('static', filename='uploads/' + filename), code=301)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
