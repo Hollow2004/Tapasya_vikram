@@ -110,6 +110,7 @@
                 </div>
                 {% endif %}
                 
+                
                 <div class="action-buttons">
                     <button class="btn-secondary" onclick="window.location.href='/upload'">
                         <i class="fas fa-upload"></i>
@@ -125,8 +126,8 @@
         {% endif %}
         
         <!-- Step 3: Follow-up Questions -->
-        {% if prediction %}
-<div class="follow-up-section">
+        {% if prediction and not recommendation %}
+        <div class="follow-up-section">
             <div class="follow-up-card">
                 <h3><i class="fas fa-question-circle"></i> Follow-up Questions</h3>
                 <p>Please help us understand your condition by answering these questions:</p>
@@ -168,7 +169,6 @@
             </div>
         </div>
         {% endif %}
-    </div>
 
     <script>
         // File input preview
