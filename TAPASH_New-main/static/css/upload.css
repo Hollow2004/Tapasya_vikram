@@ -352,3 +352,53 @@ body {
     color: #004085;
     line-height: 1.6;
 }
+
+/* Dynamic Questions Section */
+.dynamic-questions-section {
+    background-color: #f0f8ff;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #b3d9ff;
+    margin-bottom: 20px;
+}
+
+.dynamic-questions-section h4 {
+    color: #0056b3;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.dynamic-questions-section h4 i {
+    margin-right: 10px;
+    color: #007bff;
+}
+
+.dynamic-questions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dynamic-question-item {
+    background-color: #ffffff;
+    padding: 12px 15px;
+    border-radius: 6px;
+    border-left: 4px solid #007bff;
+    display: flex;
+    align-items: flex-start;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.dynamic-question-item i {
+    color: #007bff;
+    margin-right: 10px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.dynamic-question-item span {
+    color: #333;
+    line-height: 1.4;
+    font-size: 14px;
+}
